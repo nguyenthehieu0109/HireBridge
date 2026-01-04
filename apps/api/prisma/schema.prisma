@@ -12,6 +12,15 @@ enum Role {
   ADMIN
 }
 
+enum ApplicationStatus {
+  APPLIED
+  SCREENING
+  INTERVIEW
+  OFFER
+  HIRED
+  REJECTED
+}
+
 model Job {
   id          String   @id @default(uuid())
   title       String
@@ -23,6 +32,8 @@ model Job {
 
   createdById String?
   createdBy   User?    @relation("UserJobs", fields: [createdById], references: [id])
+
+  applications Application[]
 }
 
 model User {
@@ -34,5 +45,43 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  jobs      Job[]    @relation("UserJobs")
+  jobs         Job[]         @relation("UserJobs")
+  resumes      Resume[]
+  applications Application[]
+}
+
+model Resume {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  fileUrl   String
+  fileName  String?
+  isDefault Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+
+  applications Application[]
+}
+
+model Application {
+  id        String            @id @default(uuid())
+  userId    String
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  jobId     String
+  job       Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  resumeId  String?
+  resume    Resume?           @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+
+  note      String?
+  status    ApplicationStatus @default(APPLIED)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, jobId])
+  @@index([jobId])
+  @@index([userId])
 }
