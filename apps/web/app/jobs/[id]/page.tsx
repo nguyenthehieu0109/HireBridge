@@ -18,29 +18,28 @@ export default function JobDetailPage() {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
+    const fetchJob = async () => {
+      try {
+        const { data } = await api.get(`/jobs/${id}`);
+        setJob(data);
+        
+        // If candidate, fetch resumes
+        const currentUser = getUser();
+        if (currentUser?.role === 'CANDIDATE') {
+          const resumeRes = await api.get('/resumes');
+          setResumes(resumeRes.data);
+          const defaultResume = resumeRes.data.find((r: any) => r.isDefault);
+          if (defaultResume) setSelectedResume(defaultResume.id);
+        }
+      } catch (error) {
+         console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
     setUser(getUser());
     fetchJob();
   }, [id]);
-
-  const fetchJob = async () => {
-    try {
-      const { data } = await api.get(`/jobs/${id}`);
-      setJob(data);
-      
-      // If candidate, fetch resumes
-      const currentUser = getUser();
-      if (currentUser?.role === 'CANDIDATE') {
-        const resumeRes = await api.get('/resumes');
-        setResumes(resumeRes.data);
-        const defaultResume = resumeRes.data.find((r: any) => r.isDefault);
-        if (defaultResume) setSelectedResume(defaultResume.id);
-      }
-    } catch (error) {
-       console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleApply = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,14 +66,6 @@ export default function JobDetailPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-12">
-      <nav className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <Link href="/jobs" className="text-2xl font-bold text-indigo-600">HireBridge</Link>
-          </div>
-        </div>
-      </nav>
-
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="bg-indigo-600 p-8 text-white">

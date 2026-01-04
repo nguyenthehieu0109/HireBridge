@@ -18,21 +18,20 @@ export default function JobsPage() {
   const [filters, setFilters] = useState({ q, location, level });
 
   useEffect(() => {
+    const fetchJobs = async () => {
+      setLoading(true);
+      try {
+        const params = new URLSearchParams(searchParams.toString());
+        const { data } = await api.get(`/jobs?${params.toString()}`);
+        setJobs(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchJobs();
   }, [searchParams]);
-
-  const fetchJobs = async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams(searchParams.toString());
-      const { data } = await api.get(`/jobs?${params.toString()}`);
-      setJobs(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,18 +44,6 @@ export default function JobsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <Link href="/" className="text-2xl font-bold text-indigo-600">HireBridge</Link>
-            <div className="flex space-x-4">
-              <Link href="/login" className="text-gray-700 hover:text-indigo-600">Login</Link>
-              <Link href="/register" className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Join Now</Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white p-6 rounded-lg shadow mb-8">
           <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-4 gap-4">
