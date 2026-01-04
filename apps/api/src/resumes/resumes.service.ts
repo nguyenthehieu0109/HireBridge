@@ -22,9 +22,60 @@ export class ResumesService {
 
     return this.prisma.resume.create({
       data: {
-        ...dto,
+        fileUrl: dto.fileUrl,
+        fileName: dto.fileName || 'Untitled',
         userId,
         isDefault: shouldBeDefault,
+      },
+      select: {
+        id: true,
+        fileName: true,
+        fileUrl: true,
+        isDefault: true,
+      },
+    });
+  }
+
+  async createFromUpload(userId: string, data: {
+    fileName: string;
+    fileUrl: string;
+    mimeType?: string;
+    size?: number;
+    isDefault?: boolean;
+  }) {
+    // Logic set default
+    const count = await this.prisma.resume.count({ where: { userId } });
+    const isFirst = count === 0;
+    const shouldBeDefault = isFirst || data.isDefault;
+
+    if (shouldBeDefault) {
+      return this.prisma.$transaction(async (tx) => {
+        await tx.resume.updateMany({
+          where: { userId },
+          data: { isDefault: false },
+        });
+
+        return tx.resume.create({
+          data: {
+            userId,
+            fileName: data.fileName,
+            fileUrl: data.fileUrl,
+            mimeType: data.mimeType,
+            size: data.size,
+            isDefault: true,
+          },
+        });
+      });
+    }
+
+    return this.prisma.resume.create({
+      data: {
+        userId,
+        fileName: data.fileName,
+        fileUrl: data.fileUrl,
+        mimeType: data.mimeType,
+        size: data.size,
+        isDefault: false,
       },
     });
   }
