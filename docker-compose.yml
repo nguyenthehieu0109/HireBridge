@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16
+    container_name: hirebridge-db
+    environment:
+      POSTGRES_DB: hirebridge
+      POSTGRES_USER: hirebridge_user
+      POSTGRES_PASSWORD: Hirebridge@123
+    ports:
+      - "5432:5432"
+    volumes:
+      - hirebridge_pgdata:/var/lib/postgresql/data
+
+volumes:
+  hirebridge_pgdata:
