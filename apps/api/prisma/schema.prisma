@@ -6,6 +6,12 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  CANDIDATE
+  RECRUITER
+  ADMIN
+}
+
 model Job {
   id          String   @id @default(uuid())
   title       String
@@ -21,7 +27,7 @@ model User {
   email     String   @unique
   password  String
   fullName  String?
-  role      String   @default("CANDIDATE")
+  role      Role     @default(CANDIDATE)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

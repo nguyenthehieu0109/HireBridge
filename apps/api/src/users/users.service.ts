@@ -2,6 +2,7 @@ import { BadRequestException, ConflictException, Injectable, NotFoundException }
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -22,7 +23,7 @@ export class UsersService {
         email: dto.email,
         password: dto.password, // Tạm thời plain text
         fullName: dto.fullName,
-        role: dto.role ?? 'CANDIDATE',
+        role: (dto.role as Role) ?? Role.CANDIDATE,
       },
     });
 
@@ -59,6 +60,7 @@ export class UsersService {
       where: { id },
       data: {
         ...dto,
+        role: dto.role ? (dto.role as Role) : undefined,
       },
     });
 
