@@ -5,14 +5,37 @@ import { useParams } from 'next/navigation';
 import api from '@/lib/api';
 import Link from 'next/link';
 
+interface JobApplication {
+  id: string;
+  status: string;
+  createdAt: string;
+  note?: string;
+  user: {
+    fullName: string;
+    email: string;
+  };
+  resume: {
+    fileName: string;
+    fileUrl: string;
+  };
+}
+
+interface Job {
+  id: string;
+  title: string;
+  location: string;
+  level: string;
+}
+
 export default function RecruiterApplicantsPage() {
   const { jobId } = useParams();
-  const [applications, setApplications] = useState<any[]>([]);
-  const [job, setJob] = useState<any>(null);
+  const [applications, setApplications] = useState<JobApplication[]>([]);
+  const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jobId]);
 
   const fetchData = async () => {

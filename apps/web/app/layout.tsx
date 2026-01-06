@@ -1,22 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+
+const inter = Inter({ 
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
-  title: "HireBridge | Connect Candidates with Best Jobs",
-  description: "Advanced Recruitment Platform",
+  title: "HireBridge - Tuyển dụng thông minh với AI",
+  description: "Nền tảng kết nối nhân tài và doanh nghiệp bằng AI",
+  icons: {
+    icon: '/icon.png',
+  },
 };
 
 export default function RootLayout({
@@ -25,12 +24,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}
-      >
+    <html lang="vi">
+      <body className={`${inter.variable} font-sans flex flex-col min-h-screen bg-slate-100 text-slate-900`}>
         <Navbar />
-        <main>{children}</main>
+        <main className="grow">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );

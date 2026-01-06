@@ -21,6 +21,11 @@ enum ApplicationStatus {
   REJECTED
 }
 
+enum OtpType {
+  EMAIL_VERIFY
+  PASSWORD_RESET
+}
+
 model Job {
   id          String   @id @default(uuid())
   title       String
@@ -37,17 +42,19 @@ model Job {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  fullName  String?
-  role      Role     @default(CANDIDATE)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password      String
+  fullName      String?
+  role          Role     @default(CANDIDATE)
+  emailVerified Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   jobs         Job[]         @relation("UserJobs")
   resumes      Resume[]
   applications Application[]
+  otpTokens     OtpToken[]
 }
 
 model Resume {
@@ -87,4 +94,19 @@ model Application {
   @@unique([userId, jobId])
   @@index([jobId])
   @@index([userId])
+}
+
+model OtpToken {
+  id        String   @id @default(uuid())
+  email     String
+  userId    String?
+  type      OtpType
+  codeHash  String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([email, type])
 }

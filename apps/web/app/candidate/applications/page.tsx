@@ -4,8 +4,19 @@ import { useEffect, useState } from 'react';
 import api from '@/lib/api';
 import Link from 'next/link';
 
+interface Application {
+  id: string;
+  jobId: string;
+  status: string;
+  createdAt: string;
+  job: {
+    title: string;
+    location: string;
+  };
+}
+
 export default function CandidateApplicationsPage() {
-  const [applications, setApplications] = useState<any[]>([]);
+  const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,7 +47,7 @@ export default function CandidateApplicationsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 pt-28 pb-12 px-8">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-3xl font-bold mb-8">My Applications</h1>
 
@@ -58,7 +69,7 @@ export default function CandidateApplicationsPage() {
                 {applications.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="px-6 py-10 text-center text-gray-500">
-                      You haven't applied to any jobs yet. <Link href="/jobs" className="text-indigo-600 underline">Browse Jobs</Link>
+                      You haven&apos;t applied to any jobs yet. <Link href="/jobs" className="text-indigo-600 underline">Browse Jobs</Link>
                     </td>
                   </tr>
                 ) : (

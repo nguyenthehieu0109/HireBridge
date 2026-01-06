@@ -4,8 +4,17 @@ import { useEffect, useState } from 'react';
 import api from '@/lib/api';
 import Link from 'next/link';
 
+interface Job {
+  id: string;
+  title: string;
+  location: string;
+  level: string;
+  description: string;
+  createdAt: string;
+}
+
 export default function RecruiterJobsPage() {
-  const [jobs, setJobs] = useState<any[]>([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ title: '', location: '', level: 'Junior', description: '' });

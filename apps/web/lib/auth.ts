@@ -25,7 +25,14 @@ export const getUser = () => {
   return null;
 };
 
-export const setUser = (user: any) => {
+interface User {
+  id: string;
+  email: string;
+  fullName: string;
+  role: string;
+}
+
+export const setUser = (user: User) => {
   if (typeof window !== 'undefined') {
     localStorage.setItem('hirebridge_user', JSON.stringify(user));
   }

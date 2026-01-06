@@ -31,8 +31,9 @@ export default function RegisterPage() {
     try {
       await api.post('/auth/register', values);
       router.push('/login');
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Registration failed');
+    } catch (error: unknown) {
+      const err = error as Error & { response?: { data?: { message?: string } } };
+      alert(err.response?.data?.message || err.message || 'Registration failed');
     }
   };
 

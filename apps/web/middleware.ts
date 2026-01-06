@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export function middleware(_request: NextRequest) {
   // Middleware in Next.js runs on the server side (Edge). 
   // We can't access localStorage here. We'd normally use cookies.
   // Since we used localStorage for the MVP, this middleware won't work as expected 
